@@ -1,0 +1,18 @@
+{
+  "name": "tolkam/routing-twig",
+  "description": "Twig integration for tolkam routing",
+  "type": "library",
+  "license": "proprietary",
+  "minimum-stability": "dev",
+  "prefer-stable": true,
+  "autoload": {
+    "psr-4": {
+      "Tolkam\\Routing\\Twig\\": "src"
+    }
+  },
+  "require": {
+    "php": ">=7.2.0",
+    "tolkam/routing": "dev-master",
+    "twig/twig": "^2.5"
+  }
+}

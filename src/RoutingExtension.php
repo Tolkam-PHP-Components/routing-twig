@@ -12,7 +12,7 @@ class RoutingExtension extends AbstractExtension
     /**
      * @var RouterContainer
      */
-    protected $routerContainer;
+    protected RouterContainer $routerContainer;
     
     /**
      * @param RouterContainer $routerContainer
@@ -23,9 +23,9 @@ class RoutingExtension extends AbstractExtension
     }
     
     /**
-     * @inheritDoc
+     * @return string
      */
-    public function getName()
+    public function getName(): string
     {
         return 'routing';
     }
@@ -33,10 +33,14 @@ class RoutingExtension extends AbstractExtension
     /**
      * @inheritDoc
      */
-    public function getFunctions()
+    public function getFunctions(): array
     {
         return [
-            new TwigFunction('route', [$this, 'getRouteUrl'], ['is_safe_callback' => [$this, 'getSafeContexts']]),
+            new TwigFunction(
+                'route',
+                [$this, 'getRouteUrl'],
+                ['is_safe_callback' => [$this, 'getSafeContexts']]
+            ),
         ];
     }
     
@@ -52,6 +56,7 @@ class RoutingExtension extends AbstractExtension
     public function getRouteUrl(string $routeName, array $params = [], bool $raw = false)
     {
         $method = $raw ? 'generateRaw' : 'generate';
+        
         return $this->routerContainer->getGenerator()->$method($routeName, $params);
     }
     
@@ -62,9 +67,12 @@ class RoutingExtension extends AbstractExtension
      *
      * @return array
      */
-    public function getSafeContexts(Node $argsNode)
+    public function getSafeContexts(Node $argsNode): array
     {
-        $isRaw = $argsNode->hasNode(2) ? $argsNode->getNode(2)->getAttribute('value') : true;
+        $isRaw = $argsNode->hasNode('2')
+            ? $argsNode->getNode('2')->getAttribute('value')
+            : true;
+        
         return $isRaw ? [] : ['html'];
     }
 }

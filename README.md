@@ -9,7 +9,8 @@ The code is rather self-explanatory and API is intended to be as simple as possi
 ## Usage
 
 ````php
-use Tolkam\Routing\RouterContainer;
+use Aura\Router\RouterContainer;
+use Tolkam\Routing\Adapter\Aura\Adapter\Aura\AuraRouterAdapter;
 use Tolkam\Routing\Twig\RoutingExtension;
 use Twig\Environment;
 use Twig\Loader\ArrayLoader;
@@ -23,7 +24,7 @@ $twig = new Environment(new ArrayLoader([
     'myTemplate.twig' => 'Route "my.route" URL is "{{ route("my.route", {"param": "value"}) }}"',
 ]));
 
-$twig->addExtension(new RoutingExtension($routerContainer));
+$twig->addExtension(new RoutingExtension(new AuraRouterAdapter($routerContainer)));
 
 echo $twig->render('myTemplate.twig');
 ````

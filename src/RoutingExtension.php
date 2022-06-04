@@ -2,7 +2,7 @@
 
 namespace Tolkam\Routing\Twig;
 
-use Tolkam\Routing\RouterContainer;
+use Tolkam\Routing\RouterAdapterInterface;
 use Twig\Extension\AbstractExtension;
 use Twig\Node\Node;
 use Twig\TwigFunction;
@@ -10,18 +10,12 @@ use Twig\TwigFunction;
 class RoutingExtension extends AbstractExtension
 {
     /**
-     * @var RouterContainer
+     * @param RouterAdapterInterface $adapter
      */
-    protected RouterContainer $routerContainer;
-    
-    /**
-     * @param RouterContainer $routerContainer
-     */
-    public function __construct(RouterContainer $routerContainer)
+    public function __construct(private readonly RouterAdapterInterface $adapter)
     {
-        $this->routerContainer = $routerContainer;
     }
-    
+
     /**
      * @return string
      */
@@ -29,7 +23,7 @@ class RoutingExtension extends AbstractExtension
     {
         return 'routing';
     }
-    
+
     /**
      * @inheritDoc
      */
@@ -43,7 +37,7 @@ class RoutingExtension extends AbstractExtension
             ),
         ];
     }
-    
+
     /**
      * Generates url string from route name
      *
@@ -51,15 +45,13 @@ class RoutingExtension extends AbstractExtension
      * @param array  $params
      * @param bool   $raw
      *
-     * @return false|string
+     * @return string
      */
-    public function getRouteUrl(string $routeName, array $params = [], bool $raw = false)
+    public function getRouteUrl(string $routeName, array $params = [], bool $raw = false): string
     {
-        $method = $raw ? 'generateRaw' : 'generate';
-        
-        return $this->routerContainer->getGenerator()->$method($routeName, $params);
+        return $this->adapter->generate($routeName, $params, ['raw' => $raw]);
     }
-    
+
     /**
      * Returns safe contexts depending on raw flag
      *
@@ -72,7 +64,7 @@ class RoutingExtension extends AbstractExtension
         $isRaw = $argsNode->hasNode('2')
             ? $argsNode->getNode('2')->getAttribute('value')
             : true;
-        
+
         return $isRaw ? [] : ['html'];
     }
 }
